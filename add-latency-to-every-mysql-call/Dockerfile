@@ -8,7 +8,9 @@ RUN apk add --no-cache bash
 COPY --from=builder /toxiproxy /toxiproxy
 COPY --from=builder /toxiproxy-cli /toxiproxy-cli
 
-# Start Toxiproxy and configure proxy with delay
-ENTRYPOINT ["/bin/sh", "-c"]
+# Copy the startup script to the container
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-CMD ["/toxiproxy & sleep 2 && /toxiproxy-cli -h 127.0.0.1:8474 create -l 0.0.0.0:3307 -u mysql:3306 mysql_proxy && /toxiproxy-cli -h 127.0.0.1:8474 toxic add -t latency -a latency=1000 mysql_proxy && tail -f /dev/null"]
+# Use the script as the entrypoint
+ENTRYPOINT ["/start.sh"]

@@ -13,5 +13,5 @@ services:
     ports:
       - "3307:3307"  # app connects to 3307 for delayed db
       - "8474:8474" # admin port
-    depends_on:
-      - mysql
+    environment: # format: hostname:proxy_input:service_targeted_port:latency_in_ms
+      - PROXY_MYSQL=mysql:3307:3306:1000
